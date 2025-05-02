@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #101E2A;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  .container {
+    max-width: 750px;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #00FF00; /* Hacker-green */
+  }
+  
+  img {
+    max-width: 75%; /* Ajusta la mida de la imatge (50% de l'amplada del contenidor) */
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto; /* Centra la imatge horitzontalment */
+  }
+  
+  #countdown-container {
+    background-color: #E10600; /* Vermell */
+    display: inline-block;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+  }
+  
+  #countdown {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    color: #00FF00;
+    margin-bottom: 20px;
+  }
+  
+  .highlight {
+    color: #16B18F; /* Color per a "25 Pesetas" */
+  }
+  
+  /* Estil per al recuadre del codi bancari */
+  #bank-account {
+    background-color: #B0B0B0; /* Gris clar */
+    color: black; /* Color negre per al text */
+    font-weight: bold;
+    padding: 15px;
+    margin: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+  }
+  
+  #bank-account:hover {
+    background-color: #999999; /* Canvi de fons en passar el ratolí per sobre */
+  }
+  
+  .warning {
+    font-size: 1.2rem;
+    color: #FF0000; /* Vermell més intens */
+    font-weight: bold;
+    margin-top: 20px;
+  }
