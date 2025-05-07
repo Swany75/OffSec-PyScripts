@@ -11,8 +11,9 @@ A collection of Python scripts focused on Offensive Cybersecurity, developed as 
 ## Content Index
 - Port Scanner (TCP/UDP)
 - MAC Changer
+- Network Scanner (ICMP/ARP)
 - 
-- 
+-
 
 ## Repos that i use:
 [MitmProxy](https://github.com/mitmproxy/mitmproxy)
