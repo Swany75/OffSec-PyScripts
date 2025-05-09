@@ -5,7 +5,7 @@ import argparse
 import scapy.all as scapy
 from colorama import Fore
 from concurrent.futures import ThreadPoolExecutor
-from myUtils import show_message, setup_signal_handler
+from modules.my_utils import show_message, setup_signal_handler
 
 ### Functions #############################################################################################################
 

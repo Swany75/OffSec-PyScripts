@@ -3,12 +3,10 @@
 import os
 import sys
 import signal
+import smtplib
 from colorama import Fore, Style
 from scapy.all import get_if_addr
-import smtplib
 from email.mime.text import MIMEText
-
-### Functions #############################################################################################################
 
 def exit_program():
     show_message("Exiting the program...", "error")
@@ -20,17 +18,43 @@ def _handler(sig, frame):
 def setup_signal_handler():
     signal.signal(signal.SIGINT, _handler)
 
+### Network Utils ###################################################################################################################
+
 def get_ip(interface):
     try:
         ip = get_if_addr(interface)
         return ip
+
     except Exception as e:
         show_message(f"Error obtenint la IP de {Fore.GREEN}{interface}", "error", e)
         return None
 
+def get_gateway(interface):
+    pass
+
+def get_mac(ip):
+    pass
+
+
+def get_my_mac(interface):
+    pass
+
+
 def exit(parser):
     parser.print_help()
     sys.exit(1)
+
+### Show better messages ############################################################################################################
+
+"""
+
+My idea with this messages are:
+- Plus:  [+] Hey there im the script
+- Minus: [-] You recive this output
+- Info:  [i] Script X is executing
+- Error: [!] Error: You are dumb
+
+"""
 
 def show_message(message, symbol="plus", extra=""):
     if symbol == "error":
@@ -44,6 +68,8 @@ def show_message(message, symbol="plus", extra=""):
     
     elif symbol == "plus":
         print(f"\n{Fore.YELLOW}[+] {Fore.CYAN}{message} {Fore.WHITE}{extra}{Fore.RESET}\n")
+
+### Credentials #####################################################################################################################
 
 def get_credentials(file):
     try:
@@ -60,6 +86,8 @@ def get_credentials(file):
 
     return lines[1].strip()
 
+### Mail Functions ##################################################################################################################
+
 def smail(subject, body, sender, recipients, password):
     try:
         msg = MIMEText(body)
@@ -70,9 +98,13 @@ def smail(subject, body, sender, recipients, password):
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
             smtp_server.login(sender, password)
             smtp_server.sendmail(sender, recipients, msg.as_string())
+
         show_message("Email sent successfully")
+
     except Exception as e:
         show_message(f"Error sending email: {str(e)}", "error")
+
+### Ascii Art #######################################################################################################################
 
 def print_demon():
     print(f"""{Fore.RED}
@@ -97,5 +129,4 @@ dX.    9Xb      .dXb    __                         __    dXb.     dXP     .Xb
                               X. 9  `   '  P )X
                               `b  `       '  d'
                                `             '
-    {Fore.RESET}
-    """)
+{Fore.RESET}""")

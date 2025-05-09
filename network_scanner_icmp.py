@@ -5,7 +5,7 @@ import argparse
 import subprocess
 from colorama import Fore
 from concurrent.futures import ThreadPoolExecutor
-from myUtils import setup_signal_handler, show_message
+from modules.my_utils import setup_signal_handler, show_message
 
 ### Functions #############################################################################################################
 

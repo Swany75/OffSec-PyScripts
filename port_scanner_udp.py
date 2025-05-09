@@ -6,7 +6,7 @@ import signal
 import argparse
 from colorama import Fore
 from concurrent.futures import ThreadPoolExecutor
-from myUtils import show_message
+from modules.my_utils import show_message
 
 ### Variables & Constants #################################################################################################
 
