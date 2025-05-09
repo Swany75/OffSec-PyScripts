@@ -9,14 +9,14 @@ from concurrent.futures import ThreadPoolExecutor
 from modules.my_utils import show_message
 from modules.exit_handler import setup_signal_handler
 
-### Variables & Constants #################################################################################################
+### Variables & Constants ###########################################################################################################
 
 open_sockets = []
 
 TIMEOUT = 1
 MAX_THREADS = 100
 
-### Functions #####
+### Functions #######################################################################################################################
 
 def close_sockets():
     for socket in open_sockets:
@@ -96,12 +96,12 @@ def parse_ports(ports_str):
         return (int(ports_str),)
 
 
-### Main Code #############################################################################################################
+### Main Code #######################################################################################################################
 
 def main():
 
     show_message(f"Executing:", "info", f"Port Scanner {Fore.YELLOW}TCP")
-    signal.signal(signal.SIGINT, def_handler)
+    setup_signal_handler(close_sockets)
 
     target, ports_str = get_arguments()
     ports = parse_ports(ports_str)
