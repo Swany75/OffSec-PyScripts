@@ -12,9 +12,9 @@ A collection of Python scripts focused on Offensive Cybersecurity, developed as 
 - Port Scanner (TCP/UDP)
 - MAC Changer
 - Network Scanner (ICMP/ARP)
-- 
+- ARP Spoof 
 -
 
 ## Repos that i use:
-[MitmProxy](https://github.com/mitmproxy/mitmproxy)
-[Firefox Decrypt](https://github.com/unode/firefox_decrypt)
+[MitmProxy](https://github.com/mitmproxy/mitmproxy)<br>
+[Firefox Decrypt](https://github.com/unode/firefox_decrypt)<br>

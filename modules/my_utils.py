@@ -4,8 +4,10 @@ import os
 import sys
 import signal
 import smtplib
+import netifaces
+import subprocess
+import scapy.all as scapy
 from colorama import Fore, Style
-from scapy.all import get_if_addr
 from email.mime.text import MIMEText
 
 def exit_program():
@@ -19,26 +21,6 @@ def setup_signal_handler():
     signal.signal(signal.SIGINT, _handler)
 
 ### Network Utils ###################################################################################################################
-
-def get_ip(interface):
-    try:
-        ip = get_if_addr(interface)
-        return ip
-
-    except Exception as e:
-        show_message(f"Error obtenint la IP de {Fore.GREEN}{interface}", "error", e)
-        return None
-
-def get_gateway(interface):
-    pass
-
-def get_mac(ip):
-    pass
-
-
-def get_my_mac(interface):
-    pass
-
 
 def exit(parser):
     parser.print_help()
@@ -103,30 +85,3 @@ def smail(subject, body, sender, recipients, password):
 
     except Exception as e:
         show_message(f"Error sending email: {str(e)}", "error")
-
-### Ascii Art #######################################################################################################################
-
-def print_demon():
-    print(f"""{Fore.RED}
-              .                                                      .
-        .n                   .                 .                  n.
-  .   .dP                  dP                   9b                 9b.    .
- 4    qXb         .       dX                     Xb       .        dXp     t
-dX.    9Xb      .dXb    __                         __    dXb.     dXP     .Xb
-9XXb._       _.dXXXXb dXXXXbo.                 .odXXXXb dXXXXb._       _.dXXP
- 9XXXXXXXXXXXXXXXXXXXVXXXXXXXXOo.           .oOXXXXXXXXVXXXXXXXXXXXXXXXXXXXP
-  `9XXXXXXXXXXXXXXXXXXXXX'~   ~`OOO8b   d8OOO'~   ~`XXXXXXXXXXXXXXXXXXXXXP'
-    `9XXXXXXXXXXXP' `9XX'          `98v8P'          `XXP' `9XXXXXXXXXXXP'
-        ~~~~~~~       9X.          .db|db.          .XP       ~~~~~~~
-                        )b.  .dbo.dP'`v'`9b.odb.  .dX(
-                      ,dXXXXXXXXXXXb     dXXXXXXXXXXXb.
-                     dXXXXXXXXXXXP'   .   `9XXXXXXXXXXXb
-                    dXXXXXXXXXXXXb   d|b   dXXXXXXXXXXXXb
-                    9XXb'   `XXXXXb.dX|Xb.dXXXXX'   `dXXP
-                     `'      9XXXXXX(   )XXXXXXP      `'
-                              XXXX X.`v'.X XXXX
-                              XP^X'`b   d'`X^XX
-                              X. 9  `   '  P )X
-                              `b  `       '  d'
-                               `             '
-{Fore.RESET}""")
