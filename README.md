@@ -13,7 +13,7 @@ A collection of Python scripts focused on Offensive Cybersecurity, developed as 
 - MAC Changer
 - Network Scanner (ICMP/ARP)
 - ARP Spoof 
--
+- DNS Sniffer
 
 ## Repos that i use:
 [MitmProxy](https://github.com/mitmproxy/mitmproxy)<br>

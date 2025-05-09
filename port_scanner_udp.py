@@ -1,44 +1,39 @@
 #!/usr/bin/env python3
 
-import sys
 import socket
-import signal
 import argparse
 from colorama import Fore
 from concurrent.futures import ThreadPoolExecutor
 from modules.my_utils import show_message
+from modules.exit_handler import setup_signal_handler
 
-### Variables & Constants #################################################################################################
+### Variables & Constants ############################################################################################################
 
 open_sockets = []
 
 TIMEOUT = 1
 MAX_THREADS = 100
 
-### Signal Handler #############################################################################################################
+### Functions #######################################################################################################################
 
-def def_handler(sig, frame):
-
-    show_message("Exiting the program...", "error")
-
+def close_sockets():
     for socket in open_sockets:
-        socket.close()
+        try:
+            socket.close()
 
-    sys.exit(1)
+        except:
+            pass
+
+    open_sockets.clear()
 
 def get_arguments():
     
     parser = argparse.ArgumentParser(description=f'{Fore.GREEN}Fast TCP Port Scanner{Fore.RESET}')
     parser.add_argument("-t", "--target", dest="target", required=True, help="Victim target to scann (Ex: -t 192.168.1.100)")
     parser.add_argument("-p", "--port", dest="ports_str", required=True, help="Port range to scann (Ex: -p 1-100 | Ex: -p 22,23,80,443)")
+
     options = parser.parse_args()
-    
-    if options.target is None or options.ports_str is None:
-        parser.print_help()
-        sys.exit(1)
-
     return options.target, options.ports_str
-
 
 def create_socket():
     
@@ -102,7 +97,7 @@ def main():
     
     show_message(f"Executing:", "info", f"Port Scanner {Fore.YELLOW}UDP")
 
-    signal.signal(signal.SIGINT, def_handler)
+    setup_signal_handler(close_sockets)
 
     target, ports_str = get_arguments()
     ports = parse_ports(ports_str)

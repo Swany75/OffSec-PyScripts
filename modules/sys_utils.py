@@ -23,17 +23,18 @@ def enable_rules():
         subprocess.run(r"nft add rule ip filter forward counter queue num 0", shell=True, check=True)
         subprocess.run(r"nft add rule ip filter forward accept", shell=True, check=True)
 
-        # show_message("IPv4 forwarding activat i regles nftables configurades correctament.", "plus")
+        show_message("IPv4 forwarding activat i regles nftables configurades correctament.", "plus")
 
     except subprocess.CalledProcessError as e:
-        show_message(f"Error activant regles: {e}", "error")
+        show_message("Error activant regles:", "error", f"{e}")
         sys.exit(1)
 
 def disable_rules():
     try:
         subprocess.run("sysctl -w net.ipv4.ip_forward=0", shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run("nft flush ruleset", shell=True, check=True)
-        # show_message("Encaminament desactivat i regles nftables esborrades.", "minus")
+        
+        show_message("Encaminament desactivat i regles nftables esborrades.", "minus")
 
     except subprocess.CalledProcessError as e:
-        show_message(f"Error desactivant regles: {e}", "error")
+        show_message("Error desactivant regles:", "error", f"{e}")

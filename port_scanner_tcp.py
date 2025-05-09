@@ -7,6 +7,7 @@ import argparse
 from colorama import Fore
 from concurrent.futures import ThreadPoolExecutor
 from modules.my_utils import show_message
+from modules.exit_handler import setup_signal_handler
 
 ### Variables & Constants #################################################################################################
 
@@ -15,16 +16,17 @@ open_sockets = []
 TIMEOUT = 1
 MAX_THREADS = 100
 
-### Signal Handler #############################################################################################################
+### Functions #####
 
-def def_handler(sig, frame):
-
-    show_message("Exiting the program", "error")
-
+def close_sockets():
     for socket in open_sockets:
-        socket.close()
+        try:
+            socket.close()
 
-    sys.exit(1)
+        except:
+            pass
+
+    open_sockets.clear()
 
 def get_arguments():
     
