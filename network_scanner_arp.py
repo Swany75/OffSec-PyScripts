@@ -6,6 +6,7 @@ import scapy.all as scapy
 from colorama import Fore
 from concurrent.futures import ThreadPoolExecutor
 from modules.my_utils import show_message
+from modules.sys_utils import check_root
 from modules.exit_handler import setup_signal_handler
 
 ### Functions #############################################################################################################
@@ -46,6 +47,7 @@ def scan(ip):
 ### Main Code #############################################################################################################
 
 def main():
+    check_root()
     setup_signal_handler()
     show_message("Executing:", "info", f"Network Scanner {Fore.YELLOW}ARP")
 
@@ -58,8 +60,6 @@ def main():
     
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
         executor.map(scan, targets)
-
-    show_message("If you don't see any output:", "info", "Execute this script with root permissions")
 
 if __name__ == "__main__":
     main()

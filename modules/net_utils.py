@@ -3,6 +3,8 @@
 import netifaces
 import subprocess
 import scapy.all as scapy
+from scapy.all import get_if_addr
+from colorama import Fore
 from .my_utils import show_message
 
 ### Functions #######################################################################################################################

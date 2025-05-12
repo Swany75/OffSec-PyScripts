@@ -5,6 +5,7 @@ import scapy.all as scapy
 from colorama import Fore
 from modules.my_utils import show_message
 from modules.exit_handler import setup_signal_handler
+from modules.sys_utils import check_root
 
 ### Functions ########################################################################################################################
 
@@ -38,20 +39,16 @@ def sniff(interface):
 ### Main Code #############################################################################################################
 
 def main():
+    check_root()
+    setup_signal_handler()
+    show_message("Executing:", "info", "DNS Sniffer")
 
-    try:
-        setup_signal_handler()
-        show_message("Executing:", "info", "DNS Sniffer")
+    global domains_seen
+    domains_seen = set()
+    interface = get_arguments()
 
-        global domains_seen
-        domains_seen = set()
-        interface = get_arguments()
-
-        show_message("Interceptando paquetes de la máquina víctima")
-        sniff(interface)
-
-    except PermissionError:
-        show_message("You need to be SuperUser to perform this script", "error")
+    show_message("Interceptando paquetes de la máquina víctima")
+    sniff(interface)
 
 if __name__ == "__main__":
     main()

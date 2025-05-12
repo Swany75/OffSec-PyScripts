@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import subprocess
 from .my_utils import show_message
 
 ### Functions #######################################################################################################################
+
+def check_root():
+    if os.geteuid() != 0:
+        show_message("Error: You need to run this script as sudo", "error")
+        sys.exit(1)
 
 def enable_rules():
     try:

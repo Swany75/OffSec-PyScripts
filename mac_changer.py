@@ -7,6 +7,7 @@ import subprocess
 from colorama import Fore
 from modules.my_utils import show_message
 from modules.exit_handler import setup_signal_handler
+from modules.sys_utils import check_root
 
 ### Functions ##############################################################################################################
 
@@ -36,21 +37,16 @@ def change_mac_address(interface, mac_address):
 
     except subprocess.CalledProcessError as e:
         error_output = e.stderr.decode().strip()
-
-        if "Operation not permitted" in error_output:
-            show_message("You need to be SuperUser to perform this script", "error")
-        
-        else:
-            show_message("Failed to change MAC address:", "error", error_output)
-        
+        show_message("Failed to change MAC address:", "error", error_output)
         sys.exit(1)
 
 ### Main Code ##############################################################################################################
 
 def main():
-    
+    check_root()
     setup_signal_handler()
     args = get_arguments()
+    show_message("Executing:", "info", "MAC Changer")
     change_mac_address(args.interface, args.mac_address)
 
 if __name__ == "__main__":
