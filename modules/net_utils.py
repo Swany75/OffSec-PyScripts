@@ -37,4 +37,3 @@ def get_own_mac(interface):
     except Exception as e:
         show_message("ERROR:", "error", e)
         return None
-

