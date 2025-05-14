@@ -58,7 +58,7 @@ def port_scanner(port, host):
 
     try:
         s.connect((host, port))
-        print(f"{Fore.YELLOW}[+] {Fore.CYAN}Port: {Fore.WHITE}{port} {Fore.CYAN} is {Fore.GREEN} open")
+        print(f"{Fore.YELLOW}[+] {Fore.CYAN}Port: {Fore.WHITE}{port} {Fore.CYAN}is {Fore.GREEN}open")
 
     except (socket.timeout, ConnectionRefusedError):
         # show_message(f"Port: {Fore.WHITE}{port} {Fore.CYAN} is {Fore.red} closed", "minus")

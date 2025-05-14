@@ -6,6 +6,7 @@ import scapy.all as scapy
 from scapy.all import get_if_addr
 from colorama import Fore
 from .my_utils import show_message
+#from my_utils import show_message
 
 ### Functions #######################################################################################################################
 
@@ -37,3 +38,4 @@ def get_own_mac(interface):
     except Exception as e:
         show_message("ERROR:", "error", e)
         return None
+

