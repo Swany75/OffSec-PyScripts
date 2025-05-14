@@ -2,7 +2,7 @@
 A collection of Python scripts focused on Offensive Cybersecurity, developed as part of the *Offensive Python* course by Hack4u.<br>
 
 <p align="center">
-    <img src="test_website/img/image.png" alt="alt text" width="500" height="500"/>
+    <img src="websites/test_website/img/image.png" alt="alt text" width="500" height="500"/>
 </p>
 
 > [!WARNING]  
