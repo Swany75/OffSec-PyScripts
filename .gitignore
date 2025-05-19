@@ -1,2 +1,6 @@
 test.py
 credentials
+build
+venv
+dist
+keylogger-env

