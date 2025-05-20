@@ -5,14 +5,19 @@ A collection of Python scripts focused on Offensive Cybersecurity, developed as 
     <img src="websites/test_website/img/image.png" alt="alt text" width="500" height="500"/>
 </p>
 
-> [!WARNING]  
+> [!WARNING]
 > These tools are intended for educational and ethical hacking purposes only.
 
-## Setup
+## Initial Setup
 
 ```sh
+# Create a virtual env
+python3 -m venv ~/myenv
+source ~/myenv/bin/activate
+# Install the requirements
 pip install -r requirements.txt
-git clone https://github.com/unode/firefox_decrypt.git
+# Execute the setup script to download the neccesary tools that are not from this repo but they are neccesary
+python3 setup.py
 ```
 
 ## Content Index

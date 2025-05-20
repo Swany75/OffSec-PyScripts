@@ -3,6 +3,7 @@
 import sys
 import argparse
 import scapy.all as scapy
+from colorama import Fore
 from scapy.layers import http
 from modules.my_utils import show_message
 from modules.exit_handler import setup_signal_handler

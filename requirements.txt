@@ -1,5 +1,8 @@
-netfilterqueue
-scapy
 mitmproxy
-colorama
 netifaces
+scapy
+colorama
+NetfilterQueue
+mitmproxy
+pynput
+requests
