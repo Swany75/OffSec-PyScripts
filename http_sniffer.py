@@ -7,6 +7,7 @@ from colorama import Fore
 from scapy.layers import http
 from modules.my_utils import show_message
 from modules.exit_handler import setup_signal_handler
+from modules.sys_utils import check_root
 
 ### Functions ########################################################################################################################
 
@@ -44,16 +45,13 @@ def sniff(interface):
 ### Main Code ########################################################################################################################
 
 def main():
-    try:
-        show_message("Executing", "info", "DNS Sniffer")
-        setup_signal_handler()
+    check_root()
+    setup_signal_handler()
 
-        interface = get_arguments()
-        sniff(interface)
+    show_message("Executing:", "info", "HTTP Sniffer")
+
+    interface = get_arguments()
+    sniff(interface)
     
-    except PermissionError:
-        show_message("Error:", "error", "You need to be SUDO to perform this script")
-        sys.exit(1)
-
 if __name__ == "__main__":
     main()
