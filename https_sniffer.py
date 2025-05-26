@@ -14,7 +14,7 @@ r"""
     Com executar l'script:
 
     ```Shell
-    mitmproxy/mitmdump -s https_sniffer.py
+    mitmproxy/mitmdump -s https_sniffer.py --quiet
     ```
 
     Per executar aquest Script es neccesari que la maquina victima tengui activat un proxy
@@ -67,13 +67,12 @@ def request(packet):
 def main():
 
     try:
-        from mitmproxy import http
-    
-    except ImportError as e:
-        show_message("Executa:", "error", "mitmproxy/mitmdump -s https_sniffer.py")
-        return
+        from mitmproxy import http, ctx
+        show_message("Executing:", "info", "HTTPS Sniffer")
 
-    show_message("Executing:", "info", "HTTPS Sniffer")
+    except ImportError as e:
+        show_message("Executa:", "error", "mitmproxy/mitmdump -s https_sniffer.py --quiet")
+        return
 
 if __name__ == "__main__":
     main()

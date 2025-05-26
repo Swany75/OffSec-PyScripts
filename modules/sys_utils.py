@@ -29,8 +29,6 @@ def enable_rules():
         subprocess.run(r"nft add rule ip filter forward counter queue num 0", shell=True, check=True)
         subprocess.run(r"nft add rule ip filter forward accept", shell=True, check=True)
 
-        show_message("IPv4 forwarding activat i regles nftables configurades correctament.", "plus")
-
     except subprocess.CalledProcessError as e:
         show_message("Error activant regles:", "error", f"{e}")
         sys.exit(1)

@@ -4,9 +4,8 @@ import threading
 import pynput.keyboard
 from colorama import Fore
 from pynput.keyboard import Key
-from modules.my_utils import show_message
+from modules.my_utils import show_message, print_demon
 from modules.mail_utils import smail, get_credentials
-from modules.ascii_art import print_demon
 from modules.exit_handler import setup_signal_handler
 
 """

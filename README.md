@@ -28,9 +28,11 @@ python3 setup.py
 - DNS Sniffer
 - HTTP/HTTPS Sniffer
 - Image Sniffer
-- 
-- 
-- 
+- DNS Spoofer
+- HTTP/HTTPS Spoofing
+- Keylogger
+- Backdoor & C2
+- Forward Shell
 
 ## Repos that i use:
 [MitmProxy](https://github.com/mitmproxy/mitmproxy)<br>

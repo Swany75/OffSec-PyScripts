@@ -31,7 +31,7 @@ def response(packet):
 
 def main():
     try:
-        from mitmproxy import http
+        from mitmproxy import http, ctx
     
     except ImportError as e:
         show_message("Executa:", "error", "mitmproxy/mitmdump -s image_sniffer.py --quiet")

