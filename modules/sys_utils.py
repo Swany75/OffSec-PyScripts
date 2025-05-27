@@ -33,6 +33,7 @@ def setup_nfqueue():
         subprocess.run("nft add chain ip filter INPUT '{ type filter hook input priority 0; policy accept; }'", shell=True, check=True)
         subprocess.run("nft add chain ip filter OUTPUT '{ type filter hook output priority 0; policy accept; }'", shell=True, check=True)
         subprocess.run("nft add chain ip filter FORWARD '{ type filter hook forward priority 0; policy accept; }'", shell=True, check=True)
+
         subprocess.run("nft add rule ip filter INPUT queue num 0", shell=True, check=True)
         subprocess.run("nft add rule ip filter OUTPUT queue num 0", shell=True, check=True)
         subprocess.run("nft add rule ip filter FORWARD queue num 0", shell=True, check=True)

@@ -7,7 +7,7 @@ import netfilterqueue
 import scapy.all as scapy
 from modules.my_utils import show_message
 from modules.exit_handler import setup_signal_handler
-from modules.sys_utils import check_root
+from modules.sys_utils import check_root, setup_nfqueue
 
 ### Functions #############################################################################################################
 
@@ -26,7 +26,7 @@ def set_load(packet, load):
     del packet[scapy.IP].chksum
     del packet[scapy.TCP].chksum
 
-    print(packet)
+    print(packet.show())
 
     return packet
 
@@ -57,7 +57,7 @@ def process_packet(packet):
                 new_packet = set_load(scapy_packet, modified_load)
                 packet.set_payload(new_packet.build())
 
-            print(scapy_packet)
+            print(scapy_packet.show())
 
         except Exception as e:
             show_message("Error:", "error", e)
@@ -76,6 +76,8 @@ def main():
     global original_text, replace_text
     original_text = args.text_original.encode()
     replace_text = args.text_replace.encode()
+
+    setup_nfqueue()
 
     queue = netfilterqueue.NetfilterQueue()
     queue.bind(0, process_packet)
