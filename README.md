@@ -11,13 +11,8 @@ A collection of Python scripts focused on Offensive Cybersecurity, developed as 
 ## Initial Setup
 
 ```sh
-# Create a virtual env
-python3 -m venv ~/myenv
-source ~/myenv/bin/activate
 # Install the requirements
 pip install -r requirements.txt
-# Execute the setup script to download the neccesary tools that are not from this repo but they are neccesary
-python3 setup.py
 ```
 
 ## Content Index

