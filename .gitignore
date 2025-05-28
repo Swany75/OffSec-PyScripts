@@ -5,3 +5,4 @@ venv
 dist
 keylogger-env
 mitmproxy
+firefox_decrypt.py
