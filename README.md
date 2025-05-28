@@ -19,13 +19,14 @@ pip install -r requirements.txt
 - Port Scanner (TCP/UDP)
 - MAC Changer
 - Network Scanner (ICMP/ARP)
-- ARP Spoof 
+- ARP Spoofer 
 - DNS Sniffer
 - HTTP/HTTPS Sniffer
 - Image Sniffer
 - DNS Spoofer
-- HTTP/HTTPS Spoofing
+- HTTP Spoofer
 - Keylogger
+- Malware
 - Backdoor & C2
 - Forward Shell
 

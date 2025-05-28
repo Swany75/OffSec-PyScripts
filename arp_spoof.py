@@ -34,7 +34,7 @@ def main():
 
     enable_rules()
         
-    router_ip = get_gateway()
+    router_ip = get_gateway(arguments.interface)
     my_mac = get_own_mac(arguments.interface)  # Passar la interfície correctament
     victim_mac = get_mac(arguments.target)
 

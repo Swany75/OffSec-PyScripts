@@ -19,9 +19,17 @@ def get_ip(interface):
         show_message(f"Error obtenint la IP de {Fore.GREEN}{interface}", "error", e)
         return None
 
-def get_gateway():
-    result = subprocess.run("ip route show default", shell=True, capture_output=True, text=True)
-    return result.stdout.split()[2]
+def get_gateway(interface):
+    try:
+        result = subprocess.run(f"ip route show dev {interface} | grep default", shell=True, capture_output=True, text=True)
+        lines = result.stdout.strip().splitlines()
+        for line in lines:
+            parts = line.split()
+            if "default" in parts and "via" in parts:
+                return parts[parts.index("via") + 1]
+    except Exception as e:
+        show_message(f"No s'ha pogut obtenir la gateway per la interfície {interface}", "error", e)
+    return None
 
 def get_mac(ip):
     answered, _ = scapy.arping(ip, timeout=2, verbose=False)

