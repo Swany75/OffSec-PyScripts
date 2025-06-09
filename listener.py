@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
 import socket
-from myUtils import show_message, setup_signal_handler
+import argparse
+from modules.my_utils import show_message
+from modules.sys_utils import check_root
+from modules.exit_handler import setup_signal_handler
+from modules.net_utils import get_ip
 
 ### Classes ##################################################################################################################
 
@@ -54,17 +58,29 @@ class Listener:
                 show_message("Unexpected error", "error", str(e))
                 break
 
+### Functions ################################################################################################################
+
+def get_arguments():
+    parser = argparse.ArgumentParser(description="TCP Listener")
+    parser.add_argument("-i", "--interface", required=True,
+                        help="Network interface to bind listener to (e.g. eth0, wlan0)")
+
+    args = parser.parse_args()
+    return args.interface
+
 ### Main Code ################################################################################################################
 
 def main():
-    setup_signal_handler() 
+    check_root()
+    setup_signal_handler()
 
-    try:
-        my_listener = Listener("10.160.4.51", 443)
-        my_listener.run()
+    interface = get_arguments()
+    ip = get_ip(interface)
 
-    except PermissionError:
-        show_message("You need to execute this as root", "error")
+    show_message("Executing:", "info", "TCP Listener")
+
+    my_listener = Listener(ip, 443)
+    my_listener.run()
 
 if __name__ == "__main__":
     main()
